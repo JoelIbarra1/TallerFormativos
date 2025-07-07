@@ -1,62 +1,94 @@
-# Proyecto de Refactorización: Patrones de Diseño
 
-Este repositorio es una demostración práctica de cómo aplicar patrones de diseño de software para rescatar una aplicación con problemas arquitectónicos, transformándola en un sistema robusto, mantenible y escalable.
+# Best Practices: Taller de Patrones de Diseño - Aplicativo de Automóviles
 
----
+Este proyecto corresponde al desarrollo del taller propuesto por la empresa ficticia **Codificando Con Patrones Cía. Ltda.**, donde se aplican principios SOLID y patrones de diseño para mejorar la arquitectura de un sistema de gestión de vehículos.
 
-## El Desafío: 
+## Requisitos del Proyecto
 
-La aplicación original de gestión de vehículos se encontraba en un estado crítico y difícil de mantener debido a varios problemas fundamentales:
-
-* **Parálisis por Dependencias**: El sistema dependía de una base de datos que no existía, bloqueando por completo cualquier funcionalidad.
-* **Datos Volátiles**: Al ser una aplicación web sin estado, cualquier información agregada desaparecía al actualizar la página.
-* **Código "Spaghetti"**: Las responsabilidades estaban mezcladas, y el código era tan rígido que agregar un nuevo modelo de auto requería modificar múltiples archivos, arriesgando la estabilidad general.
-
-## La Estrategia Arquitectónica
-
-Para resolver estos desafíos, se implementó una solución integral basada en tres patrones de diseño que trabajan en conjunto:
-
-1.  **Una Base de Datos Temporal con `Singleton`**: Para solucionar el bloqueo inmediato, el patrón **Singleton** crea un repositorio en memoria. Esta única instancia persiste a través de toda la aplicación, actuando como una base de datos temporal que permite que la aplicación funcione y sea probada sin la dependencia externa.
-
-2.  **Construcción Limpia de Objetos con `Builder`**: Para organizar la creación de vehículos, el patrón **Builder** separa el proceso de construcción del objeto final. Esto nos permite manejar configuraciones complejas (como asignar el año actual por defecto) de una manera limpia, fluida y centralizada.
-
-3.  **Crecimiento sin Dolor con `Factory Method`**: Para preparar el sistema para el futuro, el patrón **Factory Method** nos permite definir una interfaz para crear vehículos, pero deja que las subclases decidan qué modelo específico instanciar. ¿Necesitamos agregar un "Ford Bronco"? Simplemente creamos una nueva fábrica para él, sin tocar el código existente.
-
-
-## Guía de Inicio Rápido
-
-### Requisitos
-* .NET SDK (v6.0 o superior)
-
-### Ejecución
-1.  **Clona el repositorio:**
-    ```sh
-    git clone https://github.com/DiegoCorrea07/DesignPatterns.git
-    ```
-2.  **Accede al directorio:**
-    ```sh
-    cd DesignPatterns
-    ```
-3.  **Inicia la aplicación:**
-    ```sh
-    dotnet run
-    ```
-
-## Beneficios Clave de la Solución
-
-* ✅ **Funcionalidad Inmediata**: La aplicación ahora funciona y se puede probar gracias a la persistencia en memoria.
-* ✅ **Código Mantenible**: Las responsabilidades están claramente definidas, haciendo el código más fácil de leer y depurar.
-* ✅ **Alta Extensibilidad**: El sistema está listo para crecer, permitiendo añadir nuevos modelos de vehículos sin riesgo.
-* ✅ **Preparado para el Futuro**: La transición a una base de datos real es ahora una tarea sencilla que no afectará la lógica de negocio.
-
-## Autor
-
-- **Diego Correa**
-- GitHub: [@DiegoCorrea07](https://github.com/DiegoCorrea07)
+- Implementar métodos para agregar vehículos Mustang y Explorer desde la Home Page.
+- Resolver errores del repositorio actual reportados por QA.
+- Simular almacenamiento sin base de datos (ya que aún no está disponible).
+- Preparar el sistema para agregar más propiedades por defecto al objeto `Vehicle`.
+- Incorporar nuevos modelos de forma escalable (como "Escape").
 
 ---
 
-## Licencia
+## Problemas Identificados
 
-Este proyecto está bajo licencia **MIT**.
+- El repositorio implementado previamente no funciona correctamente.
+- No existe una base de datos lista para pruebas.
+- El sistema está rígido ante nuevos modelos.
+- El objeto `Vehicle` requiere múltiples propiedades (año actual y 20 más en un futuro).
+
+---
+
+##  Solución Técnica
+
+Se aplicaron tres patrones de diseño clave:
+
+### 1. Singleton
+Permite almacenar los vehículos en memoria, simulando la funcionalidad del repositorio mientras se desarrolla la base de datos real.
+
+>  Clase: `VehicleRepository`  
+>  Instancia única compartida en todo el sistema.
+
+---
+
+### 2. Factory Method
+Se crean fábricas específicas para cada modelo (`MustangFactory`, `ExplorerFactory`, `EscapeFactory`), permitiendo extender sin modificar código existente.
+
+>  Interfaz: `VehicleFactory`  
+>  Implementaciones: `MustangFactory`, `ExplorerFactory`, `EscapeFactory`  
+>  Extensible y modular
+
+---
+
+### 3. Builder
+Facilita la construcción del objeto `Car` con múltiples propiedades por defecto (como el año actual). Aísla la lógica de inicialización compleja.
+
+>  Clase: `CarBuilder`  
+>  Método: `AddDefaultProperties()` para facilitar futuras expansiones.
+
+---
+
+##  Principios SOLID Aplicados
+
+| Principio | Aplicación |
+|----------|------------|
+| SRP (Responsabilidad Única) | Cada clase tiene un propósito específico (builder, repositorio, fábrica). |
+| OCP (Abierto/Cerrado) | Nuevos modelos o propiedades pueden añadirse sin modificar código existente. |
+
+---
+
+##  Estructura del Proyecto
+
+```
+ src/
+├── Builders/
+│   └── CarBuilder.cs
+├── Factories/
+│   ├── VehicleFactory.cs
+│   ├── MustangFactory.cs
+│   ├── ExplorerFactory.cs
+│   └── EscapeFactory.cs
+├── Interfaces/
+│   ├── IVehicle.cs
+│   └── IVehicleBuilder.cs
+├── Models/
+│   └── Car.cs
+├── Repository/
+│   └── VehicleRepository.cs
+└── Program.cs / HomePage.cs
+```
+
+---
+
+##  Estado Actual
+
+-  Repositorio funcional en memoria
+-  Métodos para agregar Mustang y Explorer
+-  Preparado para más modelos (Factory)
+-  Listo para nuevas propiedades por defecto (Builder)
+
+
 
